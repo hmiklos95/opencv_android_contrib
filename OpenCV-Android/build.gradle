@@ -31,3 +31,16 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 }
+
+
+apply plugin: 'com.jfrog.bintray'
+bintray {
+    user = 'bintray_user'
+    key = 'e05be4d40c653bc12fc16b819b32542390c2a1f2'
+    pkg {
+        repo = 'maven'
+        name = 'gradle-project'
+        licenses = ['Apache-2.0']
+        vcsUrl = 'https://github.com/hmiklos95/opencv_android_contrib.git'
+    }
+}
