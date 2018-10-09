@@ -31,16 +31,42 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 }
-
-
+apply plugin: 'maven-publish'
 apply plugin: 'com.jfrog.bintray'
+task sourceJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier "sources"
+}
+publishing {
+    publications {
+        MyPublication(MavenPublication) {
+            // Iterate over the compile dependencies (we don't want the test ones), adding a <dependency> node for each
+            groupId 'hu.miklos.opencv'
+            artifactId 'opencv_android'
+            version '1.0.0'
+            artifact(sourceJar)
+            artifact("$buildDir/outputs/aar/OpenCV-Android-release.aar")
+            configurations.compile.allDependencies.each {
+                def dependencyNode = dependenciesNode.appendNode('dependency')
+                dependencyNode.appendNode('groupId', 'hu.miklos.opencv')
+                dependencyNode.appendNode('artifactId', 'opencv_contrib')
+                dependencyNode.appendNode('version', '1.0.0')
+            }
+        }
+    }
+}
 bintray {
-    user = 'bintray_user'
+    user = 'hmiklos95'
     key = 'e05be4d40c653bc12fc16b819b32542390c2a1f2'
+    publications = ['MyPublication']
     pkg {
         repo = 'maven'
-        name = 'gradle-project'
+        name = 'opencv_contrib'
         licenses = ['Apache-2.0']
         vcsUrl = 'https://github.com/hmiklos95/opencv_android_contrib.git'
+        version {
+            name = '1.0.0'
+            released  = new Date()
+        }
     }
 }
